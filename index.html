@@ -12,7 +12,7 @@
 	</head>
 	<body>
 		<header class="container">
-			<h1>Tool Lending</h1>
+			<h1>TacBRO Tool Lending</h1>
 			<ul class="nav">
 				<li><strong>LENDING IS LOVELY</strong></li>
 				<li>AN OPEN SOURCE, EASY TO DUPLICATE PROJECT</li>
@@ -68,37 +68,35 @@
 			});
 		  </script>
 
-		<script id="tools" type="text/html">
-			<script type="text/javascript">
-				function initialize(data) {
-				  var toolsContainer = document.getElementById('tools');
-				  toolsContainer.innerHTML = ''; // Clear any existing content
-			  
-				  // Loop through each row of parsed data
-				  data.forEach(function(row, index) {
-					// Create the HTML for each tool
-					var checkedOutClass = row.checkedout === "yes" ? "not-available" : "available";
-					var toolHTML = `
-					  <div id="${index}" class="tool-box ${checkedOutClass}">
-						<span class="tool-box-tool">${row.tool}</span>
-						<div class="tool-box-bottom ${index}">
-						  ${row.checkedout === "yes" ? '<span class="tool-box-borrowed">ON LOAN</span>' : `<a href="mailto:${row.owneremail}?subject=Tool Lending: ${row.tool}"><span class="tool-box-borrow btn">BORROW</span></a>`}
-						  <ul>
-							<li><small>WHO / WHERE : </small></li>
-							<li><a href="mailto:${row.owneremail}">${row.owner}</a></li>
-							<li>${row.street}, ${row.city}, ${row.state}</li>
-							<li><a href="https://maps.google.com/maps?q=${row.street},${row.city},${row.state}" target="_blank"><small>MAP</small></a></li>
-							${row.tooldetails ? `<li><small>NOTES : </small>${row.tooldetails}</li>` : ''}
-						  </ul>
-						</div>
-					  </div>
-					`;
-			  
-					// Append the new tool HTML to the container
-					toolsContainer.innerHTML += toolHTML;
-				  });
-				}
-			  </script>
+		<script id="tools" type="text/javascript">
+			function initialize(data) {
+			  var toolsContainer = document.getElementById('tools');
+			  toolsContainer.innerHTML = ''; // Clear any existing content
+		  
+			  // Loop through each row of parsed data
+			  data.forEach(function(row, index) {
+				// Create the HTML for each tool
+				var checkedOutClass = row.checkedout === "yes" ? "not-available" : "available";
+				var toolHTML = `
+				  <div id="${index}" class="tool-box ${checkedOutClass}">
+					<span class="tool-box-tool">${row.tool}</span>
+					<div class="tool-box-bottom ${index}">
+					  ${row.checkedout === "yes" ? '<span class="tool-box-borrowed">ON LOAN</span>' : `<a href="mailto:${row.owneremail}?subject=Tool Lending: ${row.tool}"><span class="tool-box-borrow btn">BORROW</span></a>`}
+					  <ul>
+						<li><small>WHO / WHERE : </small></li>
+						<li><a href="mailto:${row.owneremail}">${row.owner}</a></li>
+						<li>${row.street}, ${row.city}, ${row.state}</li>
+						<li><a href="https://maps.google.com/maps?q=${row.street},${row.city},${row.state}" target="_blank"><small>MAP</small></a></li>
+						${row.tooldetails ? `<li><small>NOTES : </small>${row.tooldetails}</li>` : ''}
+					  </ul>
+					</div>
+				  </div>
+				`;
+		  
+				// Append the new tool HTML to the container
+				toolsContainer.innerHTML += toolHTML;
+			  });
+			}
 		</script>
 
 		<!-- <script type="text/javascript">
