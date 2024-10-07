@@ -5,7 +5,7 @@
 		<script type="text/javascript" src="js/ICanHaz.js"></script>
 		<script type="text/javascript" src='js/jquery.js'></script>
 		<script type="text/javascript" src='js/site.js'></script>
-		<script type="text/javascript" src='js/tabletop1.3.4.js'></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 		<link rel="shortcut icon" href="https://raw.githubusercontent.com/jlord/lending-library/gh-pages/favico.png"/>
 		<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,600,700,900' rel='stylesheet' type='text/css'>
 		<link media="screen" rel="stylesheet" type="text/css" href="css/site.css">
@@ -50,32 +50,63 @@
 				</div>
 		</div>
 
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function() {
+			  var csvURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vReEBkxLVVeOjtk-ntLb8yWGwUwB9Wqo_w6pC6kskb624bcAhOqIBJWHPtD4l5HKvfg2NcxOgs1jfj_/pub?output=csv";
+			  fetch(csvURL)
+				.then(response => response.text())
+				.then(data => {
+				  var parsedData = Papa.parse(data, {
+					header: true, // Ensure you get a header row
+					complete: function(results) {
+					  console.log("Parsed CSV Data:", results.data);
+					  initialize(results.data);
+					}
+				  });
+				})
+				.catch(error => console.error('Error fetching the CSV file:', error));
+			});
+		  </script>
+
 		<script id="tools" type="text/html">
-		{{#rows}}
-		<div id="{{rowNumber}}" class="tool-box {{#checkedout}}not-{{/checkedout}}available">
-			<span class="tool-box-tool">{{tool}}</span>
-			<div class="tool-box-bottom {{rowNumber}}">
-				{{#checkedout}} <span class="tool-box-borrowed">ON LOAN</span>{{/checkedout}}
-				{{^checkedout}}<a href="mailto:{{owneremail}}?subject=Tool Lending: {{tool}}"><span class="tool-box-borrow btn">BORROW</span></a>{{/checkedout}}
-				<ul>
-					<li><small>WHO / WHERE : </small></li>
-					<li><a href="mailto:{{owneremail}}">{{owner}}</a></li>
-					<li>{{street}}, {{city}}, {{state}}</li>
-					<li><a href="https://maps.google.com/maps?q={{street}},{{city}},{{state}}" target="_blank"><small>MAP</small></a></li>
-					{{#tooldetails}}
-					<li><small>NOTES : </small>{{tooldetails}}</li>
-					{{/tooldetails}}
-				</ul>
-			</div>
-		</div>
-		{{/rows}}
+			<script type="text/javascript">
+				function initialize(data) {
+				  var toolsContainer = document.getElementById('tools');
+				  toolsContainer.innerHTML = ''; // Clear any existing content
+			  
+				  // Loop through each row of parsed data
+				  data.forEach(function(row, index) {
+					// Create the HTML for each tool
+					var checkedOutClass = row.checkedout === "yes" ? "not-available" : "available";
+					var toolHTML = `
+					  <div id="${index}" class="tool-box ${checkedOutClass}">
+						<span class="tool-box-tool">${row.tool}</span>
+						<div class="tool-box-bottom ${index}">
+						  ${row.checkedout === "yes" ? '<span class="tool-box-borrowed">ON LOAN</span>' : `<a href="mailto:${row.owneremail}?subject=Tool Lending: ${row.tool}"><span class="tool-box-borrow btn">BORROW</span></a>`}
+						  <ul>
+							<li><small>WHO / WHERE : </small></li>
+							<li><a href="mailto:${row.owneremail}">${row.owner}</a></li>
+							<li>${row.street}, ${row.city}, ${row.state}</li>
+							<li><a href="https://maps.google.com/maps?q=${row.street},${row.city},${row.state}" target="_blank"><small>MAP</small></a></li>
+							${row.tooldetails ? `<li><small>NOTES : </small>${row.tooldetails}</li>` : ''}
+						  </ul>
+						</div>
+					  </div>
+					`;
+			  
+					// Append the new tool HTML to the container
+					toolsContainer.innerHTML += toolHTML;
+				  });
+				}
+			  </script>
 		</script>
 
-		<script type="text/javascript">
+		<!-- <script type="text/javascript">
 		  document.addEventListener('DOMContentLoaded', function() {
 	      var URL = "2PACX-1vReEBkxLVVeOjtk-ntLb8yWGwUwB9Wqo_w6pC6kskb624bcAhOqIBJWHPtD4l5HKvfg2NcxOgs1jfj_"
 	      Tabletop.init( { key: URL, callback: initialize, simpleSheet: true } )
 	    })
-		</script>
+		</script> -->
+
 	</body>
 </html>
