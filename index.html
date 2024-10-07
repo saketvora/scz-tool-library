@@ -75,6 +75,7 @@
 		  
 			  // Loop through each row of parsed data
 			  data.forEach(function(row, index) {
+				console.log("inside data.forEach block");
 				// Create the HTML for each tool
 				var checkedOutClass = row.checkedout === "yes" ? "not-available" : "available";
 				var toolHTML = `
